@@ -1,0 +1,9 @@
+Component: App
+
+Component: Game
+Props: numRows, numColumns, win conditions
+State: numLit/numDark, flipSwitch, matrix
+
+Component: Cell
+Props: flipSwitch, key= {rowPos-colPos}
+State: Lit/Dark

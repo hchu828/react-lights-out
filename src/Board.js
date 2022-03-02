@@ -27,13 +27,23 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
+function Board({ nrows = 6, ncols = 6, chanceLightStartsOn = .2 }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
+    for (let i = 0; i < nrows; i++) {
+      const lightOn = (Math.random() > chanceLightStartsOn)
+        ? false
+        : true;
+      const row = []
+      for (let j = 0; j < ncols; j++) {
+        row.push(lightOn);
+      }
+      initialBoard.push(row);
+    }
     return initialBoard;
   }
 
@@ -66,6 +76,12 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   // TODO
 
   // make table board
+  const gameBoard = createBoard();
+
+  return (
+    gameBoard.map(row => row.map(cell =>
+      <Cell flipCellsAroundMe={flipCellsAround} isLit={cell} />))
+  );
 
   // TODO
 }
