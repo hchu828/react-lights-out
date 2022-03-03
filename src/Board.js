@@ -27,21 +27,26 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows = 6, ncols = 6, chanceLightStartsOn = .2 }) {
+function Board({ nrows = 5, ncols = 7, chanceLightStartsOn = .2 }) {
   const [board, setBoard] = useState(createBoard());
+  // const [numLit, setNumLit] = useState(getNumLit());
 
-  const [numLit, setNumLit] = useState(board.reduce());
+  /** get number of lit cells in matrix */
+  function getNumLit() {
+    let litCells = 0;
+    board.map(row => row.map(cell => (cell) ? litCells = litCells + 1 : null));
+    return litCells;
+  }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
+    //TODO: use y, x for matrix
     for (let i = 0; i < nrows; i++) {
       const row = [];
       for (let j = 0; j < ncols; j++) {
-        const lightOn = (Math.random() > chanceLightStartsOn)
-        ? false
-        : true;
+        const lightOn = (Math.random() < chanceLightStartsOn);
         row.push(lightOn);
       }
       initialBoard.push(row);
@@ -49,11 +54,18 @@ function Board({ nrows = 6, ncols = 6, chanceLightStartsOn = .2 }) {
     return initialBoard;
   }
 
+  /** if no lit cells in matrix, return true, else false */
   function hasWon() {
-
+    return (getNumLit() === 0);
     // TODO: check the board in state to determine whether the player has won.
   }
 
+  /** flip cell at coordinate and all adjacent cells
+   * 
+   * accepts coord string "y-x" where y is row and x is col
+   * 
+   * returns updated board
+   */
   function flipCellsAround(coord) {
     setBoard(oldBoard => {
       const [y, x] = coord.split("-").map(Number);
@@ -69,10 +81,12 @@ function Board({ nrows = 6, ncols = 6, chanceLightStartsOn = .2 }) {
       const boardCopy = board.map(row => row.map(cell => cell))
 
       flipCell(y, x, boardCopy);
-      flipCell(y+1, x, boardCopy);
-      flipCell(y-1, x, boardCopy);
-      flipCell(y, x-1, boardCopy);
-      flipCell(y, x+1, boardCopy);
+      flipCell(y + 1, x, boardCopy);
+      flipCell(y - 1, x, boardCopy);
+      flipCell(y, x - 1, boardCopy);
+      flipCell(y, x + 1, boardCopy);
+
+      // setNumLit(getNumLit());
 
       return boardCopy;
 
@@ -86,19 +100,23 @@ function Board({ nrows = 6, ncols = 6, chanceLightStartsOn = .2 }) {
   }
 
   // if the game is won, just show a winning msg & render nothing else
-
+  const won = hasWon();
   // TODO
 
   // make table board
 
   return (
-    <div>
-    {board.map( (row, y) => <div>{row.map( (cell, x) =>
-      <Cell id={`${y}-${x}`} flipCellsAroundMe={flipCellsAround} isLit={cell} />)}</div>)
-    }
-    </div>
+    <table>
+      <tbody>
+        {won && <p>You've won!</p>}
+        {!won && board.map((row, y) => <tr key={y}>{row.map((cell, x) =>
+          <Cell key={`${y}-${x}`} id={`${y}-${x}`} flipCellsAroundMe={() => flipCellsAround(`${y}-${x}`)} isLit={cell} />)}</tr>)
+        }
+      </tbody>
+    </table>
   );
-    
+
 }
+//TODO: format lines 112-113
 
 export default Board;
