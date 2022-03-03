@@ -29,7 +29,6 @@ import "./Board.css";
 
 function Board({ nrows = 5, ncols = 7, chanceLightStartsOn = .2 }) {
   const [board, setBoard] = useState(createBoard());
-  // const [numLit, setNumLit] = useState(getNumLit());
 
   /** get number of lit cells in matrix */
   function getNumLit() {
@@ -41,11 +40,9 @@ function Board({ nrows = 5, ncols = 7, chanceLightStartsOn = .2 }) {
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
-    //TODO: use y, x for matrix
-    for (let i = 0; i < nrows; i++) {
+    for (let y = 0; y < nrows; y++) {
       const row = [];
-      for (let j = 0; j < ncols; j++) {
+      for (let x = 0; x < ncols; x++) {
         const lightOn = (Math.random() < chanceLightStartsOn);
         row.push(lightOn);
       }
@@ -57,7 +54,6 @@ function Board({ nrows = 5, ncols = 7, chanceLightStartsOn = .2 }) {
   /** if no lit cells in matrix, return true, else false */
   function hasWon() {
     return (getNumLit() === 0);
-    // TODO: check the board in state to determine whether the player has won.
   }
 
   /** flip cell at coordinate and all adjacent cells
@@ -86,37 +82,32 @@ function Board({ nrows = 5, ncols = 7, chanceLightStartsOn = .2 }) {
       flipCell(y, x - 1, boardCopy);
       flipCell(y, x + 1, boardCopy);
 
-      // setNumLit(getNumLit());
-
       return boardCopy;
-
-
-      // TODO: Make a (deep) copy of the oldBoard
-
-      // TODO: in the copy, flip this cell and the cells around it
-
-      // TODO: return the copy
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
   const won = hasWon();
-  // TODO
-
-  // make table board
 
   return (
     <table>
       <tbody>
         {won && <p>You've won!</p>}
-        {!won && board.map((row, y) => <tr key={y}>{row.map((cell, x) =>
-          <Cell key={`${y}-${x}`} id={`${y}-${x}`} flipCellsAroundMe={() => flipCellsAround(`${y}-${x}`)} isLit={cell} />)}</tr>)
+        {!won && board.map(
+          (row, y) => 
+            <tr key={y}>{row.map(
+              (cell, x) =>
+                <Cell 
+                  key={`${y}-${x}`} 
+                  flipCellsAroundMe={() => flipCellsAround(`${y}-${x}`)} 
+                  isLit={cell} 
+                />)}
+            </tr>)
         }
       </tbody>
     </table>
   );
 
 }
-//TODO: format lines 112-113
 
 export default Board;
